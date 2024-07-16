@@ -47,9 +47,9 @@ bool WhoAction::Execute(Event& event)
 
     if (!out.str().empty())
     {
-        if (AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot)))
+        if (auto areaEntry = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot)))
         {
-            out << ", (|cffb04040" << areaEntry->area_name[0] << "|r)";
+            out << ", (|cffb04040" << areaEntry->GetAreaName(0) << "|r)";
         }
     }
 

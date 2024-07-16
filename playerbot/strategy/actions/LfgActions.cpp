@@ -116,13 +116,13 @@ bool LfgJoinAction::JoinLFG()
             ClosestGrave = sWorldSafeLocsStore.LookupEntry<WorldSafeLocsEntry>(zoneId);
 
             bool inCity = false;
-            AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(bot->GetAreaId());
+            auto areaEntry = GetAreaEntryByAreaID(bot->GetAreaId());
             if (areaEntry)
             {
-                if (areaEntry->zone)
-                    areaEntry = GetAreaEntryByAreaID(areaEntry->zone);
+                if (areaEntry->GetZone())
+                    areaEntry = GetAreaEntryByAreaID(areaEntry->GetZone());
 
-                if (areaEntry && areaEntry->flags & AREA_FLAG_CAPITAL)
+                if (areaEntry && areaEntry->GetFlags() & AREA_FLAG_CAPITAL)
                     inCity = true;
             }
 
@@ -260,33 +260,33 @@ bool LfgJoinAction::JoinLFG()
         }
     }
 
-    /*AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(bot->GetZoneId());
+    /*auto areaEntry = GetAreaEntryByAreaID(bot->GetZoneId());
     // check if area has no parent zone
-    if (areaEntry && !areaEntry->zone)
+    if (areaEntry && !areaEntry->GetZone())
     {
-        zoneLFG = areaEntry->ID;
-        zoneName = areaEntry->area_name[0];
+        zoneLFG = areaEntry->GetID();
+        zoneName = areaEntry->GetAreaName(0);
     }*/
 
     // only use lfg zone if current quest leads there
     if (questZoneLFG)
     {
-        AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(questZoneLFG);
+        auto areaEntry = GetAreaEntryByAreaID(questZoneLFG);
         // check if area has no parent zone
-        if (areaEntry && !areaEntry->zone)
+        if (areaEntry && !areaEntry->GetZone())
         {
-            zoneLFG = areaEntry->ID;
-            zoneName = areaEntry->area_name[0];
+            zoneLFG = areaEntry->GetID();
+            zoneName = areaEntry->GetAreaName(0);
         }
     }
     else if (!bot->IsTaxiFlying())
     {
-        AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(bot->GetZoneId());
+        auto areaEntry = GetAreaEntryByAreaID(bot->GetZoneId());
         // check if area has no parent zone
-        if (areaEntry && !areaEntry->zone)
+        if (areaEntry && !areaEntry->GetZone())
         {
-            zoneLFG = areaEntry->ID;
-            zoneName = areaEntry->area_name[0];
+            zoneLFG = areaEntry->GetID();
+            zoneName = areaEntry->GetAreaName(0);
         }
     }
 
@@ -392,13 +392,13 @@ bool LfgJoinAction::JoinLFG()
                 uint32 targetAreaFlag = GetAreaFlagByMapId(location->mapid);
                 if (targetAreaFlag)
                 {
-                    AreaTableEntry const* areaEntry = GetAreaEntryByAreaFlagAndMap(targetAreaFlag, location->mapid);
+                    auto areaEntry = GetAreaEntryByAreaFlagAndMap(targetAreaFlag, location->mapid);
                     if (areaEntry)
                     {
-                        if (areaEntry->zone)
-                            areaEntry = GetAreaEntryByAreaID(areaEntry->zone);
+                        if (areaEntry->GetZone())
+                            areaEntry = GetAreaEntryByAreaID(areaEntry->GetZone());
 
-                        if (areaEntry && !areaEntry->zone)
+                        if (areaEntry && !areaEntry->GetZone())
                         {
                             for (uint32 i = 0; i < sLFGDungeonStore.GetNumRows(); ++i)
                             {
@@ -420,7 +420,7 @@ bool LfgJoinAction::JoinLFG()
                                         continue;
 
                                     // check by zone name, doesn't work for some dungeons
-                                    if (dungeon->name[0] == areaEntry->area_name[0])
+                                    if (dungeon->name[0] == areaEntry->GetAreaName(0))
                                     {
                                         lfgType = LFG_TYPE_DUNGEON;
                                         lfgName = dungeon->name[0];
@@ -452,13 +452,13 @@ bool LfgJoinAction::JoinLFG()
                                                     ClosestGrave = sWorldSafeLocsStore.LookupEntry<WorldSafeLocsEntry>(zoneId);
 
                                                     bool inCity = false;
-                                                    AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(bot->GetAreaId());
+                                                    auto areaEntry = GetAreaEntryByAreaID(bot->GetAreaId());
                                                     if (areaEntry)
                                                     {
-                                                        if (areaEntry->zone)
-                                                            areaEntry = GetAreaEntryByAreaID(areaEntry->zone);
+                                                        if (areaEntry->GetZone())
+                                                            areaEntry = GetAreaEntryByAreaID(areaEntry->GetZone());
 
-                                                        if (areaEntry && areaEntry->flags & AREA_FLAG_CAPITAL)
+                                                        if (areaEntry && areaEntry->GetFlags() & AREA_FLAG_CAPITAL)
                                                             inCity = true;
                                                     }
 
@@ -513,13 +513,13 @@ bool LfgJoinAction::JoinLFG()
                     ClosestGrave = sWorldSafeLocsStore.LookupEntry<WorldSafeLocsEntry>(zoneId);
 
                     bool inCity = false;
-                    AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(bot->GetAreaId());
+                    auto areaEntry = GetAreaEntryByAreaID(bot->GetAreaId());
                     if (areaEntry)
                     {
-                        if (areaEntry->zone)
-                            areaEntry = GetAreaEntryByAreaID(areaEntry->zone);
+                        if (areaEntry->GetZone())
+                            areaEntry = GetAreaEntryByAreaID(areaEntry->GetZone());
 
-                        if (areaEntry && areaEntry->flags & AREA_FLAG_CAPITAL)
+                        if (areaEntry && areaEntry->GetFlags() & AREA_FLAG_CAPITAL)
                             inCity = true;
                     }
 
@@ -635,13 +635,13 @@ bool LfgJoinAction::JoinLFG()
                     ClosestGrave = sWorldSafeLocsStore.LookupEntry<WorldSafeLocsEntry>(zoneId);
 
                     bool inCity = false;
-                    AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(bot->GetAreaId());
+                    auto areaEntry = GetAreaEntryByAreaID(bot->GetAreaId());
                     if (areaEntry)
                     {
-                        if (areaEntry->zone)
-                            areaEntry = GetAreaEntryByAreaID(areaEntry->zone);
+                        if (areaEntry->GetZone())
+                            areaEntry = GetAreaEntryByAreaID(areaEntry->GetZone());
 
-                        if (areaEntry && areaEntry->flags & AREA_FLAG_CAPITAL)
+                        if (areaEntry && areaEntry->GetFlags() & AREA_FLAG_CAPITAL)
                             inCity = true;
                     }
 
@@ -1066,10 +1066,10 @@ bool LfgLeaveAction::Execute(Event& event)
 #ifdef MANGOSBOT_ZERO
     LFGPlayerQueueInfo qInfo;
     sWorld.GetLFGQueue().GetPlayerQueueInfo(&qInfo, bot->GetObjectGuid());
-    AreaTableEntry const* area = GetAreaEntryByAreaID(qInfo.areaId);
+    auto area = GetAreaEntryByAreaID(qInfo.areaId);
     if (area)
     {
-        sLog.outBasic("Bot #%d %s:%d <%s>: leaves LFG queue to %s after %u minutes", bot->GetGUIDLow(), bot->GetTeam() == ALLIANCE ? "A" : "H", bot->GetLevel(), bot->GetName(), area->area_name[0], (qInfo.timeInLFG / 60000));
+        sLog.outBasic("Bot #%d %s:%d <%s>: leaves LFG queue to %s after %u minutes", bot->GetGUIDLow(), bot->GetTeam() == ALLIANCE ? "A" : "H", bot->GetLevel(), bot->GetName(), area->GetAreaName(0), (qInfo.timeInLFG / 60000));
         sWorld.GetLFGQueue().RemovePlayerFromQueue(bot->GetObjectGuid(), PLAYER_CLIENT_LEAVE);
     }
 #endif

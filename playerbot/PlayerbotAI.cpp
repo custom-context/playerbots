@@ -5010,10 +5010,10 @@ std::string PlayerbotAI::HandleRemoteCommand(std::string command)
     {
         std::ostringstream out; out << bot->GetPositionX() << " " << bot->GetPositionY() << " " << bot->GetPositionZ() << " " << bot->GetMapId() << " " << bot->GetOrientation();
         uint32 area = sServerFacade.GetAreaId(bot);
-        if (const AreaTableEntry* areaEntry = GetAreaEntryByAreaID(area))
+        if (auto areaEntry = GetAreaEntryByAreaID(area))
         {
-            if (AreaTableEntry const* zoneEntry = areaEntry->zone ? GetAreaEntryByAreaID(areaEntry->zone) : areaEntry)
-                out << " |" << zoneEntry->area_name[0] << "|";
+            if (auto zoneEntry = areaEntry->GetZone() ? GetAreaEntryByAreaID(areaEntry->GetZone()) : areaEntry)
+                out << " |" << zoneEntry->GetAreaName(0) << "|";
         }
         return out.str();
     }

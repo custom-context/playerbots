@@ -83,15 +83,15 @@ CreatureDataPair const* BgMasterValue::NearestBm(bool allowDead)
         if (ai->getReaction(bmFactionEntry) < REP_NEUTRAL)
             continue;
 
-        AreaTableEntry const* area = bmPos.getArea();
+        auto area = bmPos.getArea();
 
         if (!area)
             continue;
 
         //Is the area hostile?
-        if (area->team == 4 && bot->GetTeam() == ALLIANCE)
+        if (area->GetTeam() == 4 && bot->GetTeam() == ALLIANCE)
             continue;
-        if (area->team == 2 && bot->GetTeam() == HORDE)
+        if (area->GetTeam() == 2 && bot->GetTeam() == HORDE)
             continue;
 
         if (!allowDead)

@@ -322,16 +322,16 @@ std::string RpgTravelDestination::getTitle() {
 
 bool ExploreTravelDestination::isActive(Player* bot)
 {
-    AreaTableEntry const* area = GetAreaEntryByAreaID(areaId);
+    auto area = GetAreaEntryByAreaID(areaId);
 
-    if (area->area_level && (uint32)area->area_level > bot->GetLevel() && bot->GetLevel() < DEFAULT_MAX_LEVEL)
+    if (area->GetAreaLevel() && (uint32)area->GetAreaLevel() > bot->GetLevel() && bot->GetLevel() < DEFAULT_MAX_LEVEL)
         return false;
 
-    if (area->exploreFlag == 0xffff)
+    if (area->GetExploreFlag() == 0xffff)
         return false;
-    int offset = area->exploreFlag / 32;
+    int offset = area->GetExploreFlag() / 32;
 
-    uint32 val = (uint32)(1 << (area->exploreFlag % 32));
+    uint32 val = (uint32)(1 << (area->GetExploreFlag() % 32));
     uint32 currFields = bot->GetUInt32Value(PLAYER_EXPLORED_ZONES_1 + offset);
 
     return !(currFields & val);    
@@ -693,7 +693,7 @@ int32 TravelMgr::getAreaLevel(uint32 area_id)
     if (lev != areaLevels.end())
         return lev->second;
 
-    AreaTableEntry const* area = GetAreaEntryByAreaID(area_id);
+    auto area = GetAreaEntryByAreaID(area_id);
 
     if (!area)
     {
@@ -702,10 +702,10 @@ int32 TravelMgr::getAreaLevel(uint32 area_id)
     }
 
     //Get exploration level
-    if (area->area_level) 
+    if (area->GetAreaLevel()) 
     {
-        areaLevels[area_id] = area->area_level;
-        return area->area_level;
+        areaLevels[area_id] = area->GetAreaLevel();
+        return area->GetAreaLevel();
     }
 
 
@@ -715,12 +715,12 @@ int32 TravelMgr::getAreaLevel(uint32 area_id)
     //Get sub-area's
     for (uint32 i = 0; i <= sAreaStore.GetNumRows(); i++)
     {
-        AreaTableEntry const* subArea = GetAreaEntryByAreaID(i);
+        auto subArea = GetAreaEntryByAreaID(i);
 
-        if (!subArea || subArea->zone != area->ID)
+        if (!subArea || subArea->GetZone() != area->GetID())
             continue;
 
-        int32 subLevel = getAreaLevel(subArea->ID);
+        int32 subLevel = getAreaLevel(subArea->GetID());
 
         if (!subLevel)
             continue;
@@ -769,10 +769,10 @@ int32 TravelMgr::getAreaLevel(uint32 area_id)
     }
 
     //Use parent zone value.
-    if (area->zone)
+    if (area->GetZone())
     {
         areaLevels[area_id] = 0; //Set a temporary value so it wont be counted.
-        level = getAreaLevel(area->zone);
+        level = getAreaLevel(area->GetZone());
         areaLevels[area_id] = level;        
         return areaLevels[area_id];
     }
@@ -817,13 +817,13 @@ void TravelMgr::loadAreaLevels()
         for (uint32 i = 0; i < sAreaStore.GetNumRows(); ++i)    // areaflag numbered from 0
         {
             bar.step();
-            if (AreaTableEntry const* area = sAreaStore.LookupEntry(i))
+            if (auto area = sAreaStore.LookupEntry(i))
             {
-                if (std::find(loadedAreas.begin(), loadedAreas.end(), area->ID) == loadedAreas.end())
+                if (std::find(loadedAreas.begin(), loadedAreas.end(), area->GetID()) == loadedAreas.end())
                 {
-                    int32 level = sTravelMgr.getAreaLevel(area->ID);
+                    int32 level = sTravelMgr.getAreaLevel(area->GetID());
 
-                    WorldDatabase.PExecute("INSERT INTO `ai_playerbot_zone_level` (`id`, `level`) VALUES ('%d', '%d')", area->ID, level);
+                    WorldDatabase.PExecute("INSERT INTO `ai_playerbot_zone_level` (`id`, `level`) VALUES ('%d', '%d')", area->GetID(), level);
                 }
             }
         }
@@ -1246,18 +1246,18 @@ void TravelMgr::LoadQuestTravelTable()
         ExploreTravelDestination* loc;
 
         GuidPosition point = GuidPosition(u.guid, WorldPosition(u.map, u.x, u.y, u.z, u.o));
-        AreaTableEntry const* area = point.getArea();
+        auto area = point.getArea();
 
         if (!area)
             continue;
 
-        if (!area->exploreFlag)
+        if (!area->GetExploreFlag())
             continue;
 
         if (u.type == 1) 
             continue;
 
-        auto iloc = exploreLocs.find(area->ID);
+        auto iloc = exploreLocs.find(area->GetID());
 
         int32 guid = u.type == 0 ? u.guid : u.guid * -1;
 
@@ -1265,11 +1265,11 @@ void TravelMgr::LoadQuestTravelTable()
 
         if (iloc == exploreLocs.end())
         {
-            loc = new ExploreTravelDestination(area->ID, sPlayerbotAIConfig.tooCloseDistance, sPlayerbotAIConfig.sightDistance);
+            loc = new ExploreTravelDestination(area->GetID(), sPlayerbotAIConfig.tooCloseDistance, sPlayerbotAIConfig.sightDistance);
             loc->setCooldownDelay(1000);
             loc->setExpireDelay(1000);
-            loc->setTitle(area->area_name[0]);
-            exploreLocs.insert_or_assign(area->ID, loc);
+            loc->setTitle(area->GetAreaName(0));
+            exploreLocs.insert_or_assign(area->GetID(), loc);
         }
         else
         {

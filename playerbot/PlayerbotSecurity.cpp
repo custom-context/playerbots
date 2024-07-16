@@ -216,10 +216,10 @@ bool PlayerbotSecurity::CheckLevelFor(PlayerbotSecurityLevel level, bool silent,
                 uint32 area = sServerFacade.GetAreaId(bot);
                 if (area)
                 {
-					const AreaTableEntry* entry = GetAreaEntryByAreaID(area);
+					const auto entry = GetAreaEntryByAreaID(area);
                     if (entry)
                     {
-                        out << " |cffffffff(|cffff0000" << entry->area_name[0] << "|cffffffff)";
+                        out << " |cffffffff(|cffff0000" << entry->GetAreaName(0) << "|cffffffff)";
                     }
                 }
             }

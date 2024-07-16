@@ -2039,10 +2039,10 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, std::vector<WorldLocation> 
                 if (!tMap->HasActiveAreas())
                     return true;
 
-                AreaTableEntry const* area = l.getArea();
+                auto area = l.getArea();
                 if (area)
                 {
-                    if (!tMap->HasActiveZone(area->zone ? area->zone : area->ID))
+                    if (!tMap->HasActiveZone(area->GetZone() ? area->GetZone() : area->GetID()))
                         return true;
                 }
             }), tlocs.end());
@@ -2055,15 +2055,15 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, std::vector<WorldLocation> 
         uint32 mapId = l.getMapId();
         uint32 zoneId, areaId;
         sTerrainMgr.GetZoneAndAreaId(zoneId, areaId, mapId, l.coord_x, l.coord_y, l.coord_z);
-        AreaTableEntry const* area = GetAreaEntryByAreaID(areaId);
+        auto area = GetAreaEntryByAreaID(areaId);
         if (zoneId && zoneId != areaId)
         {
-            AreaTableEntry const* zone = GetAreaEntryByAreaID(zoneId);
+            auto zone = GetAreaEntryByAreaID(zoneId);
             if (!zone)
                 return true;
 
             bool isEnemyZone = false;
-            switch (zone->team)
+            switch (zone->GetTeam())
             {
             case AREATEAM_ALLY:
                 isEnemyZone = bot->GetTeam() != ALLIANCE;
@@ -2075,7 +2075,7 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, std::vector<WorldLocation> 
                 isEnemyZone = false;
                 break;
             }
-            if (isEnemyZone && (bot->GetLevel() < 21 || (zone->flags & AREA_FLAG_CAPITAL)))
+            if (isEnemyZone && (bot->GetLevel() < 21 || (zone->GetFlags() & AREA_FLAG_CAPITAL)))
                 return true;
 
             // filter other races zones
@@ -2109,7 +2109,7 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, std::vector<WorldLocation> 
             return true;
 
         bool isEnemyZone = false;
-        switch (area->team)
+        switch (area->GetTeam())
         {
         case AREATEAM_ALLY:
             isEnemyZone = bot->GetTeam() != ALLIANCE;
@@ -2170,13 +2170,13 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, std::vector<WorldLocation> 
                 continue;
 
             uint32 areaId = sTerrainMgr.GetAreaId(loc.mapid, x, y, z);
-            AreaTableEntry const* area = GetAreaEntryByAreaID(areaId);
+            auto area = GetAreaEntryByAreaID(areaId);
             if (!area)
                 continue;
 
 #ifndef MANGOSBOT_ZERO
             // Do not teleport to outland before portal opening (allow new races zones)
-            if (sWorldState.GetExpansion() == EXPANSION_NONE && (loc.mapid == 571 || (loc.mapid == 530 && area->team != 2 && area->team != 4)))
+            if (sWorldState.GetExpansion() == EXPANSION_NONE && (loc.mapid == 571 || (loc.mapid == 530 && area->GetTeam() != 2 && area->GetTeam() != 4)))
                 continue;
 #endif
 
@@ -2190,13 +2190,13 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, std::vector<WorldLocation> 
 
             z = 0.05f + ground;
             sLog.outDetail("Random teleporting bot %s to %s %f,%f,%f (%u/%zu locations)",
-                bot->GetName(), area->area_name[0], x, y, z, attemtps, tlocs.size());
+                bot->GetName(), area->GetAreaName(0), x, y, z, attemtps, tlocs.size());
 
             if (bot->IsTaxiFlying())          
                 bot->GetMotionMaster()->MovementExpired();
 
             if (hearth)
-                bot->SetHomebindToLocation(loc, area->ID);
+                bot->SetHomebindToLocation(loc, area->GetID());
 
             bot->GetMotionMaster()->Clear();
             bot->TeleportTo(loc.mapid, x, y, z, 0);
@@ -2214,7 +2214,7 @@ void RandomPlayerbotMgr::RandomTeleport(Player* bot, std::vector<WorldLocation> 
                         if (member->IsTaxiFlying())
                             member->GetMotionMaster()->MovementExpired();
                         if (hearth)
-                            member->SetHomebindToLocation(loc, area->ID);
+                            member->SetHomebindToLocation(loc, area->GetID());
 
                         member->GetMotionMaster()->Clear();
                         member->TeleportTo(loc.mapid, x, y, z, 0);
@@ -3690,13 +3690,13 @@ uint32 RandomPlayerbotMgr::GetBattleMasterEntry(Player* bot, BattleGroundTypeId 
             break;
         }
 
-        AreaTableEntry const* area = GetAreaEntryByAreaID(sServerFacade.GetAreaId(Bm));
+        auto area = GetAreaEntryByAreaID(sServerFacade.GetAreaId(Bm));
         if (!area)
             continue;
 
-        if (area->team == 4 && bot->GetTeam() == ALLIANCE)
+        if (area->GetTeam() == 4 && bot->GetTeam() == ALLIANCE)
             continue;
-        if (area->team == 2 && bot->GetTeam() == HORDE)
+        if (area->GetTeam() == 2 && bot->GetTeam() == HORDE)
             continue;
 
         if (Bm->GetDeathState() == DEAD)

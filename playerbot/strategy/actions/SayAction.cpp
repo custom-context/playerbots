@@ -53,8 +53,8 @@ bool SayAction::Execute(Event& event)
 
     if (bot->IsInWorld())
     {
-        if (AreaTableEntry const* area = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot)))
-            placeholders["<subzone>"] = area->area_name[0];
+        if (auto area = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot)))
+            placeholders["<subzone>"] = area->GetAreaName(0);
     }
 
     // set delay before next say

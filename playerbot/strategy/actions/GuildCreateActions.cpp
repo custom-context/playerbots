@@ -299,13 +299,13 @@ bool PetitionTurnInAction::isUseful()
         return false;
 
     bool inCity = false;
-    AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot));
+    auto areaEntry = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot));
     if (areaEntry)
     {
-        if (areaEntry->zone)
-            areaEntry = GetAreaEntryByAreaID(areaEntry->zone);
+        if (areaEntry->GetZone())
+            areaEntry = GetAreaEntryByAreaID(areaEntry->GetZone());
 
-        if (areaEntry && areaEntry->flags & AREA_FLAG_CAPITAL)
+        if (areaEntry && areaEntry->GetFlags() & AREA_FLAG_CAPITAL)
             inCity = true;
     }
 
@@ -348,13 +348,13 @@ bool BuyTabardAction::isUseful()
         return false;
 
     bool inCity = false;
-    AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot));
+    auto areaEntry = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot));
     if (areaEntry)
     {
-        if (areaEntry->zone)
-            areaEntry = GetAreaEntryByAreaID(areaEntry->zone);
+        if (areaEntry->GetZone())
+            areaEntry = GetAreaEntryByAreaID(areaEntry->GetZone());
 
-        if (areaEntry && areaEntry->flags & AREA_FLAG_CAPITAL)
+        if (areaEntry && areaEntry->GetFlags() & AREA_FLAG_CAPITAL)
             inCity = true;
     }
 

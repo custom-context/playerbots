@@ -276,13 +276,13 @@ void SuggestWhatToDoAction::something()
     std::map<std::string, std::string> placeholders;
     placeholders["%role"] = chat->formatClass(bot, AiFactory::GetPlayerSpecTab(bot));
 
-    AreaTableEntry const* entry = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot));
+    auto entry = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot));
     if (!entry)
         return;
 
     std::ostringstream out;
     //out << "|cffb04040" << entry->area_name[_locale] << "|r";
-    out << entry->area_name[_locale];
+    out << entry->GetAreaName(_locale);
     placeholders["%zone"] = out.str();
 
     spam(BOT_TEXT2("suggest_something", placeholders),  0x18, !urand(0, 2), !urand(0, 3));
@@ -300,10 +300,10 @@ void SuggestWhatToDoAction::spam(std::string msg, uint8 flags, bool worldChat, b
 
     for (uint32 i = 0; i < sChatChannelsStore.GetNumRows(); ++i)
     {
-        ChatChannelsEntry const* channel = sChatChannelsStore.LookupEntry(i);
+        auto channel = sChatChannelsStore.LookupEntry(i);
         if (!channel) continue;
 
-        AreaTableEntry const* current_zone = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot));
+        auto current_zone = GetAreaEntryByAreaID(sServerFacade.GetAreaId(bot));
         if (!current_zone)
             continue;
 
@@ -311,17 +311,17 @@ void SuggestWhatToDoAction::spam(std::string msg, uint8 flags, bool worldChat, b
         char channelName[100];
         Channel* chn = nullptr;
 #ifndef MANGOSBOT_ZERO
-        if ((channel->flags & Channel::CHANNEL_DBC_FLAG_LFG) != 0)
+        if ((channel->GetFlags() & Channel::CHANNEL_DBC_FLAG_LFG) != 0)
 #else
-        if (channel->ChannelID == 24)
+        if (channel->GetChannelID() == 24)
 #endif
         {
-            std::string chanName = channel->pattern[_locale];
+            std::string chanName = channel->GetPattern(_locale);
             chn = cMgr->GetChannel(chanName, bot);
         }
         else
         {
-            snprintf(channelName, 100, channel->pattern[_locale], current_zone->area_name[_locale]);
+            snprintf(channelName, 100, channel->GetPattern(_locale), current_zone->GetAreaName(_locale));
             chn = cMgr->GetChannel(channelName, bot);
         }
 

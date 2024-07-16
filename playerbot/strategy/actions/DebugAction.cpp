@@ -688,15 +688,15 @@ bool DebugAction::Execute(Event& event)
 
         guidP.printWKT(out);
 
-        out << "[a:" << guidP.getArea()->area_name[0]; 
+        out << "[a:" << guidP.getArea()->GetAreaName(0); 
 
         if (guidP.getArea() && guidP.getAreaLevel())
             out << " level: " << guidP.getAreaLevel();
-        if (guidP.getArea()->zone && GetAreaEntryByAreaID(guidP.getArea()->zone))
+        if (guidP.getArea()->GetZone() && GetAreaEntryByAreaID(guidP.getArea()->GetZone()))
         {
-            out << " z:" << GetAreaEntryByAreaID(guidP.getArea()->zone)->area_name[0];
-            if (sTravelMgr.getAreaLevel(guidP.getArea()->zone))
-                out << " level: " << sTravelMgr.getAreaLevel(guidP.getArea()->zone);
+            out << " z:" << GetAreaEntryByAreaID(guidP.getArea()->GetZone())->GetAreaName(0);
+            if (sTravelMgr.getAreaLevel(guidP.getArea()->GetZone()))
+                out << " level: " << sTravelMgr.getAreaLevel(guidP.getArea()->GetZone());
         }
 
         out << "] ";

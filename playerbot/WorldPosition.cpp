@@ -426,8 +426,8 @@ bool WorldPosition::canFly() const
 
     // don't allow flying in Dalaran restricted areas
     // (no other zones currently has areas with AREA_FLAG_CANNOT_FLY)
-    if (AreaTableEntry const* atEntry = GetAreaEntryByAreaID(areaid))
-        return (!(atEntry->flags & AREA_FLAG_CANNOT_FLY));
+    if (auto atEntry = GetAreaEntryByAreaID(areaid))
+        return (!(atEntry->GetFlags() & AREA_FLAG_CANNOT_FLY));
 #endif
 
     return true;
@@ -481,7 +481,7 @@ WorldPosition WorldPosition::getDisplayLocation() const
     return offset(mapOffset);
 };
 
-AreaTableEntry const* WorldPosition::getArea() const
+entry::view::AreaView WorldPosition::getArea() const
 {
     loadMapAndVMap(0);
 
@@ -499,32 +499,32 @@ std::string WorldPosition::getAreaName(const bool fullName, const bool zoneName)
             return map->name[0];
     }
 
-    AreaTableEntry const* area = getArea();
+    auto area = getArea();
 
     if (!area)
         return "";
 
-    std::string areaName = area->area_name[0];
+    std::string areaName = area->GetAreaName(0);
 
     if (fullName)
     {
-        uint16 zoneId = area->zone;
+        uint16 zoneId = area->GetZone();
 
         while (zoneId > 0)
         {
-            AreaTableEntry const* parentArea = GetAreaEntryByAreaID(zoneId);
+            auto parentArea = GetAreaEntryByAreaID(zoneId);
 
             if (!parentArea)
                 break;
 
-            std::string subAreaName = parentArea->area_name[0];
+            std::string subAreaName = parentArea->GetAreaName(0);
 
             if (zoneName)
                 areaName = subAreaName;
             else
                 areaName = subAreaName + " " + areaName;
 
-            zoneId = parentArea->zone;
+            zoneId = parentArea->GetZone();
         }
     }
 
@@ -534,20 +534,20 @@ std::string WorldPosition::getAreaName(const bool fullName, const bool zoneName)
 int32 WorldPosition::getAreaLevel() const
 {
     if(getArea())
-        return sTravelMgr.getAreaLevel(getArea()->ID);
+        return sTravelMgr.getAreaLevel(getArea()->GetID());
 
     return 0;
 }
 
 bool WorldPosition::hasAreaFlag(const AreaFlags flag) const
 {
-    AreaTableEntry const* areaEntry = getArea();
+    auto areaEntry = getArea();
     if (areaEntry)
     {
-        if (areaEntry->zone)
-            areaEntry = GetAreaEntryByAreaID(areaEntry->zone);
+        if (areaEntry->GetZone())
+            areaEntry = GetAreaEntryByAreaID(areaEntry->GetZone());
 
-        if (areaEntry && areaEntry->flags & flag)
+        if (areaEntry && areaEntry->GetFlags() & flag)
             return true;
     }
 
@@ -556,14 +556,14 @@ bool WorldPosition::hasAreaFlag(const AreaFlags flag) const
 
 bool WorldPosition::hasFaction(const Team team) const
 {
-    AreaTableEntry const* areaEntry = getArea();
+    auto areaEntry = getArea();
     if (areaEntry)
     {
-        if (areaEntry->team == 2 && team == ALLIANCE)
+        if (areaEntry->GetTeam() == 2 && team == ALLIANCE)
             return true;
-        if (areaEntry->team == 4 && team == HORDE)
+        if (areaEntry->GetTeam() == 4 && team == HORDE)
             return true;
-        if (areaEntry->team == 6)
+        if (areaEntry->GetTeam() == 6)
             return true;
     }
     return false;

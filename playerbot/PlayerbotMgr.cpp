@@ -374,25 +374,25 @@ void PlayerbotHolder::OnBotLogin(Player * const bot)
     if (locale == 255)
         locale = static_cast<int32>(LocaleConstant::LOCALE_enUS);
     
-    AreaTableEntry const* current_zone = GetAreaEntryByAreaID(sTerrainMgr.GetAreaId(bot->GetMapId(), bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ()));
+    auto current_zone = GetAreaEntryByAreaID(sTerrainMgr.GetAreaId(bot->GetMapId(), bot->GetPositionX(), bot->GetPositionY(), bot->GetPositionZ()));
     ChannelMgr* cMgr = channelMgr(bot->GetTeam());
-    std::string current_zone_name = current_zone ? current_zone->area_name[locale] : "";
+    std::string current_zone_name = current_zone ? current_zone->GetAreaName(locale) : "";
 
     if (current_zone && cMgr)
     {
         for (uint32 i = 0; i < sChatChannelsStore.GetNumRows(); ++i)
         {
-            ChatChannelsEntry const* channel = sChatChannelsStore.LookupEntry(i);
+            auto channel = sChatChannelsStore.LookupEntry(i);
             if (!channel) continue;
 
 #ifndef MANGOSBOT_ZERO
-            bool isLfg = (channel->flags & Channel::CHANNEL_DBC_FLAG_LFG) != 0;
+            bool isLfg = (channel->GetFlags() & Channel::CHANNEL_DBC_FLAG_LFG) != 0;
 #else
-            bool isLfg = channel->ChannelID == 24;
+            bool isLfg = channel->GetChannelID() == 24;
 #endif
 
             // skip non built-in channels or global channel without zone name in pattern
-            if (!isLfg && (!channel || (channel->flags & 4) == 4))
+            if (!isLfg && (!channel || (channel->GetFlags() & 4) == 4))
                 continue;
 
             //  new channel
@@ -400,7 +400,7 @@ void PlayerbotHolder::OnBotLogin(Player * const bot)
             if (isLfg)
             {
 #ifndef MANGOSBOT_ZERO
-                new_channel = cMgr->GetJoinChannel(channel->pattern[locale], channel->ChannelID);
+                new_channel = cMgr->GetJoinChannel(channel->GetPattern(locale), channel->GetChannelID());
 #else
                 new_channel = cMgr->GetJoinChannel("LookingForGroup");
 #endif
@@ -408,9 +408,9 @@ void PlayerbotHolder::OnBotLogin(Player * const bot)
             else
             {
                 char new_channel_name_buf[100];
-                snprintf(new_channel_name_buf, 100, channel->pattern[locale], current_zone_name.c_str());
+                snprintf(new_channel_name_buf, 100, channel->GetPattern(locale), current_zone_name.c_str());
 #ifndef MANGOSBOT_ZERO
-                new_channel = cMgr->GetJoinChannel(new_channel_name_buf, channel->ChannelID);
+                new_channel = cMgr->GetJoinChannel(new_channel_name_buf, channel->GetChannelID());
 #else
                 new_channel = cMgr->GetJoinChannel(new_channel_name_buf);
 #endif

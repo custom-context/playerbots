@@ -225,7 +225,7 @@ namespace ai
 
         bool isValid() const { return MaNGOS::IsValidMapCoord(coord_x, coord_y, coord_z, orientation); };
         uint16 getAreaFlag() const { return isValid() ? sTerrainMgr.GetAreaFlag(getMapId(), coord_x, coord_y, coord_z) : 0; };
-        AreaTableEntry const* getArea() const;
+        entry::view::AreaView getArea() const;
         std::string getAreaName(const bool fullName = true, const bool zoneName = false) const;
         int32 getAreaLevel() const;
 
