@@ -8,10 +8,7 @@
 
 PlayerbotTextMgr::PlayerbotTextMgr()
 {
-    for (uint8 i = 1; i < MAX_LOCALE; ++i)
-    {
-        botTextLocalePriority[sObjectMgr.GetStorageLocaleIndexFor(LocaleConstant(i))] = 0;
-    }
+    ResetLocalePriority();
 }
 
 PlayerbotTextMgr::~PlayerbotTextMgr()
@@ -92,7 +89,7 @@ std::string PlayerbotTextMgr::GetBotText(std::string name)
     std::vector<BotTextEntry>& list = botTexts[name];
     BotTextEntry textEntry = list[urand(0, list.size() - 1)];
     int32 localePrio = GetLocalePriority();
-    if (localePrio == -1)
+    if (localePrio < 1)
         return textEntry.m_text;
     else
     {
@@ -141,7 +138,7 @@ std::string PlayerbotTextMgr::GetBotText(ChatReplyType replyType, std::map<std::
     BotTextEntry textEntry = proper_list[urand(0, proper_list.size() - 1)];
     std::string botText;
     int32 localePrio = GetLocalePriority();
-    if (localePrio == -1)
+    if (localePrio < 1)
         botText = textEntry.m_text;
     else
     {
