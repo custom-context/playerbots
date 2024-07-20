@@ -1045,16 +1045,16 @@ void RandomPlayerbotMgr::LoadBattleMastersCache()
 #endif
         uint32 bmFactionId = bmFaction->faction;
 #ifdef MANGOS
-        FactionEntry const* bmParentFaction = sFactionStore.LookupEntry(bmFactionId);
+        auto bmParentFaction = sFactionStore.LookupEntry(bmFactionId);
 #endif
 #ifdef CMANGOS
 #ifdef MANGOSBOT_ONE
-        FactionEntry const* bmParentFaction = sFactionStore.LookupEntry<FactionEntry>(bmFactionId);
+        auto bmParentFaction = sFactionStore.LookupView<entry::view::FactionView>(bmFactionId);
 #else
-        FactionEntry const* bmParentFaction = sFactionStore.LookupEntry(bmFactionId);
+        auto bmParentFaction = sFactionStore.LookupEntry(bmFactionId);
 #endif
 #endif
-        uint32 bmParentTeam = bmParentFaction->team;
+        uint32 bmParentTeam = bmParentFaction->GetTeam();
         Team bmTeam = TEAM_BOTH_ALLOWED;
         if (bmParentTeam == 891)
             bmTeam = ALLIANCE;

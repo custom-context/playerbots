@@ -1054,12 +1054,12 @@ void RandomItemMgr::BuildItemInfoCache()
 
         if (!cacheInfo->team && proto->AllowableRace > 1 && proto->AllowableRace < 8388607)
         {
-            if (FactionEntry const* faction = sFactionStore.LookupEntry(HORDE))
-                if ((proto->AllowableRace & faction->BaseRepRaceMask[0]) != 0)
+            if (auto faction = sFactionStore.LookupEntry(HORDE))
+                if ((proto->AllowableRace & faction->GetReputationRaceMask()[0]) != 0)
                     cacheInfo->team = HORDE;
 
-            if (FactionEntry const* faction = sFactionStore.LookupEntry(ALLIANCE))
-                if ((proto->AllowableRace & faction->BaseRepRaceMask[0]) != 0)
+            if (auto faction = sFactionStore.LookupEntry(ALLIANCE))
+                if ((proto->AllowableRace & faction->GetReputationRaceMask()[0]) != 0)
                     cacheInfo->team = ALLIANCE;
         }
 #endif
@@ -1067,12 +1067,12 @@ void RandomItemMgr::BuildItemInfoCache()
         // check faction
         if (!cacheInfo->team && proto->AllowableRace > 1 && proto->AllowableRace < 8388607)
         {
-            if (FactionEntry const* faction = sFactionStore.LookupEntry<FactionEntry>(HORDE))
-                if ((proto->AllowableRace & faction->BaseRepRaceMask[0]) != 0)
+            if (auto faction = sFactionStore.LookupEntry<FactionEntry>(HORDE))
+                if ((proto->AllowableRace & faction->GetReputationRaceMask()[0]) != 0)
                     cacheInfo->team = HORDE;
 
-            if (FactionEntry const* faction = sFactionStore.LookupEntry<FactionEntry>(ALLIANCE))
-                if ((proto->AllowableRace & faction->BaseRepRaceMask[0]) != 0)
+            if (auto faction = sFactionStore.LookupEntry<FactionEntry>(ALLIANCE))
+                if ((proto->AllowableRace & faction->GetReputationRaceMask()[0]) != 0)
                     cacheInfo->team = ALLIANCE;
         }
 #endif
@@ -1080,12 +1080,12 @@ void RandomItemMgr::BuildItemInfoCache()
         // check faction
         if (!cacheInfo->team && proto->AllowableRace > 1 && proto->AllowableRace < 8388607)
         {
-            if (FactionEntry const* faction = sFactionStore.LookupEntry(HORDE))
-                if ((proto->AllowableRace & faction->BaseRepRaceMask[0]) != 0)
+            if (auto faction = sFactionStore.LookupEntry(HORDE))
+                if ((proto->AllowableRace & faction->GetReputationRaceMask()[0]) != 0)
                     cacheInfo->team = HORDE;
 
-            if (FactionEntry const* faction = sFactionStore.LookupEntry(ALLIANCE))
-                if ((proto->AllowableRace & faction->BaseRepRaceMask[0]) != 0)
+            if (auto faction = sFactionStore.LookupEntry(ALLIANCE))
+                if ((proto->AllowableRace & faction->GetReputationRaceMask()[0]) != 0)
                     cacheInfo->team = ALLIANCE;
         }
 
@@ -1152,14 +1152,14 @@ void RandomItemMgr::BuildItemInfoCache()
                                     cacheInfo->repRank = uint32(r);
                             }
 #ifdef MANGOSBOT_ONE
-                            if (FactionEntry const* faction = sFactionStore.LookupEntry<FactionEntry>(quest->GetRequiredMinRepFaction()))
+                            if (auto faction = sFactionStore.LookupView<entry::view::FactionView>(quest->GetRequiredMinRepFaction()))
 #else
-                            if (FactionEntry const* faction = sFactionStore.LookupEntry(quest->GetRequiredMinRepFaction()))
+                            if (auto faction = sFactionStore.LookupEntry(quest->GetRequiredMinRepFaction()))
 #endif
                             {
-                                if (faction->team == ALLIANCE)
+                                if (faction->GetTeam() == ALLIANCE)
                                     cacheInfo->team = ALLIANCE;
-                                if (faction->team == HORDE)
+                                if (faction->GetTeam() == HORDE)
                                     cacheInfo->team = HORDE;
                             }
                         }

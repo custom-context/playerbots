@@ -21,15 +21,15 @@ bool TellReputationAction::Execute(Event& event)
 
     const FactionTemplateEntry *factionTemplate = sServerFacade.GetFactionTemplateEntry(unit);
     uint32 faction = factionTemplate->faction;
-    const FactionEntry* entry = sFactionStore.LookupEntry
+    auto entry = sFactionStore.LookupEntry
     #ifdef MANGOSBOT_ONE
-            <FactionEntry>
+            <entry::view::FactionView>
     #endif
             (faction);
     int32 reputation = bot->GetReputationMgr().GetReputation(faction);
 
     std::ostringstream out;
-    out << entry->name[0] << ": ";
+    out << entry->GetName(0) << ": ";
     out << "|cff";
     ReputationRank rank = bot->GetReputationMgr().GetRank(entry);
     switch (rank) {
