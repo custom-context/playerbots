@@ -85,7 +85,7 @@ bool DebugAction::Execute(Event& event)
             if (!sMapStore.LookupEntry(i))
                 continue;
 
-            uint32 mapId = sMapStore.LookupEntry(i)->MapID;
+            uint32 mapId = sMapStore.LookupEntry(i)->GetMapID();
 
             Map* map = sMapMgr.FindMap(mapId);
 

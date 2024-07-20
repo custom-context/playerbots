@@ -324,7 +324,7 @@ RandomPlayerbotMgr::RandomPlayerbotMgr()
             if (!sMapStore.LookupEntry(i))
                 continue;
 
-            uint32 mapId = sMapStore.LookupEntry(i)->MapID;
+            uint32 mapId = sMapStore.LookupEntry(i)->GetMapID();
             facingFix[mapId] = {};
         }
 
@@ -2992,7 +2992,7 @@ bool RandomPlayerbotMgr::HandlePlayerbotConsoleCommand(ChatHandler* handler, cha
             if (!sMapStore.LookupEntry(i))
                 continue;
 
-            uint32 mapId = sMapStore.LookupEntry(i)->MapID;
+            uint32 mapId = sMapStore.LookupEntry(i)->GetMapID();
             boost::thread t([mapId]() {WorldPosition::unloadMapAndVMaps(mapId); });
             t.detach();
         }

@@ -932,7 +932,7 @@ void TravelMgr::SetMobAvoidArea()
         if (!sMapStore.LookupEntry(i))
             continue;
         
-        uint32 mapId = sMapStore.LookupEntry(i)->MapID;
+        uint32 mapId = sMapStore.LookupEntry(i)->GetMapID();
         calculations.push_back(std::async([this, mapId] { SetMobAvoidAreaMap(mapId); }));
         bar.step();
     }

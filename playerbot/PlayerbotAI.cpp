@@ -751,7 +751,7 @@ bool PlayerbotAI::CanEnterArea(const AreaTrigger* area)
     {
         DungeonPersistentState* state = bot->GetBoundInstanceSaveForSelfOrGroup(area->target_mapId);
         Map* map = sMapMgr.FindMap(area->target_mapId, state ? state->GetInstanceId() : 0);
-        const MapEntry* mapEntry = sMapStore.LookupEntry(area->target_mapId);
+        auto mapEntry = sMapStore.LookupEntry(area->target_mapId);
 
         // check if this account try to abuse reseting instance
 #ifdef MANGOSBOT_ZERO

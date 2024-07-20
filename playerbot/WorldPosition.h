@@ -163,7 +163,7 @@ namespace ai
         std::vector<std::vector<WorldPosition*>> distancePartition(const std::vector<float>& distanceLimits, std::vector<WorldPosition*> points) const;
 
         //Map functions. Player independent.
-        const MapEntry* getMapEntry() const { return sMapStore.LookupEntry(mapid); }
+        entry::view::MapView getMapEntry() const { return sMapStore.LookupEntry(mapid); }
         uint32 getInstanceId() const { for (auto& map : sMapMgr.Maps()) { if (map.second->GetId() == getMapId()) return map.second->GetInstanceId(); }; return 0; }
         Map* getMap() const { return sMapMgr.FindMap(mapid, getMapEntry()->Instanceable() ? getInstanceId() : 0); }
         const TerrainInfo* getTerrain() const { return getMap() ? getMap()->GetTerrain() : sTerrainMgr.LoadTerrain(getMapId()); }

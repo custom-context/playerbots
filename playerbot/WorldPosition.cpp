@@ -122,8 +122,8 @@ GridMap* TerrainInfoAccess::LoadMapAndVMap(const uint32 x, const uint32 y, bool 
     if (!m_vmgr->IsTileLoaded(m_mapId, x, y))
     {
         // load VMAPs for current map/grid...
-        const MapEntry* i_mapEntry = sMapStore.LookupEntry(m_mapId);
-        const char* mapName = i_mapEntry ? i_mapEntry->name[sWorld.GetDefaultDbcLocale()] : "UNNAMEDMAP\x0";
+        auto i_mapEntry = sMapStore.LookupEntry(m_mapId);
+        const char* mapName = i_mapEntry ? i_mapEntry->GetName(sWorld.GetDefaultDbcLocale()) : "UNNAMEDMAP\x0";
 
         int vmapLoadResult = m_vmgr->loadMap((sWorld.GetDataPath() + "vmaps").c_str(), m_mapId, x, y);
         switch (vmapLoadResult)
@@ -412,8 +412,8 @@ bool WorldPosition::canFly() const
 
 #ifdef MANGOSBOT_ONE  
     uint32 v_map = GetVirtualMapForMapAndZone(getMapId(), zoneid);
-    MapEntry const* mapEntry = sMapStore.LookupEntry(v_map);
-    if (!mapEntry || mapEntry->addon < 1 || !mapEntry->IsContinent())
+    auto mapEntry = sMapStore.LookupEntry(v_map);
+    if (!mapEntry || mapEntry->GetAddon() < 1 || !mapEntry->IsContinent())
         return false;
 #endif
 #ifdef MANGOSBOT_TWO
@@ -494,9 +494,9 @@ std::string WorldPosition::getAreaName(const bool fullName, const bool zoneName)
 {    
     if (!isOverworld())
     {
-        MapEntry const* map = sMapStore.LookupEntry(getMapId());
+        auto map = sMapStore.LookupEntry(getMapId());
         if (map)
-            return map->name[0];
+            return map->GetName(0);
     }
 
     auto area = getArea();
