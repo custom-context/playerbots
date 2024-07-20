@@ -2547,10 +2547,10 @@ void PlayerbotFactory::InitTradeSkills()
 
                     if (skill && !bot->HasSkill(skill))
                     {
-                        SkillLineEntry const* pSkill = sSkillLineStore.LookupEntry(skill);
+                        auto pSkill = sSkillLineStore.LookupEntry(skill);
                         if (pSkill)
                         {
-                            if (SpellName.find("Apprentice") != std::string::npos && pSkill->categoryId == SKILL_CATEGORY_PROFESSION || pSkill->categoryId == SKILL_CATEGORY_SECONDARY)
+                            if (SpellName.find("Apprentice") != std::string::npos && pSkill->GetCategoryID() == SKILL_CATEGORY_PROFESSION || pSkill->GetCategoryID() == SKILL_CATEGORY_SECONDARY)
                                 continue;
                         }
                     }
